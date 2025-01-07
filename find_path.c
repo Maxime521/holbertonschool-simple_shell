@@ -1,7 +1,4 @@
 #include "shell.h"
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 /**
  * find_path - Searches for a command in the PATH.
@@ -11,12 +8,12 @@
  */
 char *find_path(char *command)
 {
-	char *path, *path_copy, *dir;
-	char *full_path;
+	char *path, *path_copy, *dir, *full_path;
 	size_t len;
+	struct stat st;
 
-	if (!command || strchr(command, '/'))
-		return (command);
+	if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
+		return (strdup(command));
 
 	path = getenv("PATH");
 	if (!path)
@@ -27,7 +24,7 @@ char *find_path(char *command)
 		return (NULL);
 
 	dir = strtok(path_copy, ":");
-	while (dir)
+	while (dir != NULL)
 	{
 		len = strlen(dir) + strlen(command) + 2;
 		full_path = malloc(len);
@@ -38,7 +35,7 @@ char *find_path(char *command)
 		}
 
 		snprintf(full_path, len, "%s/%s", dir, command);
-		if (access(full_path, X_OK) == 0)
+		if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
 		{
 			free(path_copy);
 			return (full_path);
