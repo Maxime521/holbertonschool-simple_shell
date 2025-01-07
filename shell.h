@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 char *read_line(void);
 char **parse_line(char *line);
@@ -16,4 +18,5 @@ void print_env(void);
 char *find_path(char *command);
 extern char **environ;
 int handle_builtin(char **args);
+
 #endif
