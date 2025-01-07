@@ -34,7 +34,7 @@ char *find_path(char *command)
 			return (NULL);
 		}
 
-		snprintf(full_path, len, "%s/%s", dir, command);
+		printf(full_path, len, "%s/%s", dir, command);
 		if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
 		{
 			free(path_copy);
