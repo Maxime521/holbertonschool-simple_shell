@@ -12,17 +12,12 @@
 
 char *read_line(void);
 char **parse_line(char *line);
-int execute(char **args);
+void execute(char **args);
 void prompt(void);
 void print_env(void);
 char *find_path(char *command);
 extern char **environ;
 int handle_builtin(char **args);
-void handle_sigint(int sig);
-void setup_signal_handlers(void);
-char *find_command(char *command);
-
-
-
+char **tokenize(char *line);
 
 #endif

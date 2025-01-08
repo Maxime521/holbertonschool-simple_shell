@@ -1,41 +1,42 @@
 #include "shell.h"
-#include <string.h>
-#include <stdlib.h>
 
 /**
- * parse_line - splits a line into arguments
- * @line: The line to be split
+ * tokenize - Splits a line into tokens
+ * @line: The line to be tokenized
  *
- * Return:Array of arguments, or NULL if line is empty or allocation fails.
+ * Return: An array of tokens
  */
-char **parse_line(char *line)
+char **tokenize(char *line)
 {
-	size_t bufsize = 64;
+	int bufsize = 64, position = 0;
 	char **tokens = malloc(bufsize * sizeof(char *));
 	char *token;
-	size_t i = 0;
 
 	if (!tokens)
 	{
-		perror("simple_shell");
-		return (NULL);
-
+		fprintf(stderr, "allocation error\n");
+		exit(EXIT_FAILURE);
 	}
 
-	token = strtok(line, " \t\n");
+	token = strtok(line, " \t\r\n\a");
 	while (token != NULL)
 	{
-		if (i >= bufsize - 1)
+		tokens[position] = token;
+		position++;
+
+		if (position >= bufsize)
 		{
-			fprintf(stderr, "simple_shell: too many tokens\n");
-			tokens[i] = NULL;
-			return (tokens);
+			bufsize += 64;
+			tokens = realloc(tokens, bufsize * sizeof(char *));
+			if (!tokens)
+			{
+				fprintf(stderr, "allocation error\n");
+				exit(EXIT_FAILURE);
+			}
 		}
 
-		tokens[i++] = token;
-		token = strtok(NULL, " \t\n");
+		token = strtok(NULL, " \t\r\n\a");
 	}
-
-	tokens[i] = NULL;
+	tokens[position] = NULL;
 	return (tokens);
 }
