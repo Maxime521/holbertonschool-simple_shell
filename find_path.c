@@ -8,11 +8,12 @@
  * @command: Command to find.
  * Return: Full path or NULL if not found.
  */
-char *find_path (char *command)
+char *find_path(char *command)
 {
 	char *path, *path_copy, *dir, *full_path;
 	size_t len;
 	struct stat st;
+
 	if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
 		return (strdup(command));
 	path = getenv("PATH");
