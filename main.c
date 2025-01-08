@@ -32,9 +32,6 @@ int main(void)
 			free(line);
 			break;
 		}
-
-		/* Remove the newline character from the input */
-		if (nread > 0 && line[nread - 1] == '\n')
 			line[nread - 1] = '\0';
 
 		/* Handle "exit" command */
