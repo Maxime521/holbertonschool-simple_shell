@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 /**
- * main - entry point of the shell
+ * main - Entry point of the simple shell program.
  *
- * Return: always 0
+ * Return: Always 0.
  */
 int main(void)
 {
@@ -15,26 +16,35 @@ int main(void)
 	ssize_t nread;
 	size_t len = 0;
 
+	/* Set up signal handlers for Ctrl+C */
+	setup_signal_handlers();
+
 	while (1)
 	{
+		/* Display prompt only in interactive mode */
 		if (isatty(STDIN_FILENO))
 			write(STDOUT_FILENO, "$ ", 2);
 
+		/* Read a line from the user */
 		nread = getline(&line, &len, stdin);
-		if (nread == -1)
+		if (nread == -1) /* Handle EOF (Ctrl+D) or error */
 		{
 			free(line);
 			break;
 		}
 
-		line[nread - 1] = '\0';
+		/* Remove the newline character from the input */
+		if (nread > 0 && line[nread - 1] == '\n')
+			line[nread - 1] = '\0';
 
+		/* Handle "exit" command */
 		if (strcmp(line, "exit") == 0)
 		{
 			free(line);
 			break;
 		}
 
+		/* Parse the line into arguments and execute the command */
 		args = parse_line(line);
 		if (args != NULL)
 		{
@@ -45,3 +55,4 @@ int main(void)
 
 	return (0);
 }
+

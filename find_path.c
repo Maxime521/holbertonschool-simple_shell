@@ -1,50 +1,50 @@
 #include "shell.h"
+#include <sys/stat.h>
+#include <stdlib.h>
+#include <string.h>
 
 /**
- * find_path - Searches for a command in the PATH.
- * @command: The command to search for.
- *
- * Return: Full path to the command if found, or NULL if not found.
+ * find_command - Locate a command in the PATH.
+ * @command: Command to find.
+ * Return: Full path or NULL if not found.
  */
-char *find_path(char *command)
+char *find_command(char *command)
 {
-	char *path, *path_copy, *dir, *full_path;
-	size_t len;
-	struct stat st;
+    char *path = getenv("PATH"), *path_copy, *token, *full_path;
+    struct stat st;
 
-	if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
-		return (strdup(command));
+    if (!command || !path || (stat(command, &st) == 0 && (st.st_mode & S_IXUSR)))
+        return (strdup(command));
 
-	path = getenv("PATH");
-	if (!path)
-		return (NULL);
+    path_copy = strdup(path);
+    if (!path_copy)
+        return (NULL);
 
-	path_copy = strdup(path);
-	if (!path_copy)
-		return (NULL);
+    token = strtok(path_copy, ":");
+    while (token)
+    {
+        full_path = malloc(strlen(token) + strlen(command) + 2);
+        if (!full_path)
+        {
+            free(path_copy);
+            return (NULL);
+        }
 
-	dir = strtok(path_copy, ":");
-	while (dir != NULL)
-	{
-		len = strlen(dir) + strlen(command) + 2;
-		full_path = malloc(len);
-		if (!full_path)
-		{
-			free(path_copy);
-			return (NULL);
-		}
+        strcpy(full_path, token);
+        strcat(full_path, "/");
+        strcat(full_path, command);
 
-		printf(full_path, len, "%s/%s", dir, command);
-		if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
-		{
-			free(path_copy);
-			return (full_path);
-		}
+        if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
+        {
+            free(path_copy);
+            return (full_path);
+        }
 
-		free(full_path);
-		dir = strtok(NULL, ":");
-	}
+        free(full_path);
+        token = strtok(NULL, ":");
+    }
 
-	free(path_copy);
-	return (NULL);
+    free(path_copy);
+    return (NULL);
 }
+

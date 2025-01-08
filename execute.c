@@ -18,7 +18,7 @@ int execute(char **args)
 	if (handle_builtin(args) != -1)
 		return (1);
 
-	command = find_path(args[0]);
+	command = find_command(args[0]);
 	if (!command)
 	{
 		fprintf(stderr, "simple_shell: command not found: %s\n", args[0]);

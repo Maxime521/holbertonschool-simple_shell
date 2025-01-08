@@ -18,5 +18,11 @@ void print_env(void);
 char *find_path(char *command);
 extern char **environ;
 int handle_builtin(char **args);
+void handle_sigint(int sig);
+void setup_signal_handlers(void);
+char *find_command(char *command);
+
+
+
 
 #endif
