@@ -1,14 +1,25 @@
 #include "shell.h"
 /**
- * print_env - Prints the current environment variables
+ * _printenv - print environment
+ * Return: 0 if success
  */
-void print_env(void)
+int _printenv(void)
 {
-	char **env = environ;
+	char **environ = *(getenviron());
+	int i;
+	int j;
 
-	while (*env)
+	i = 0;
+	while (environ[i])
 	{
-		printf("%s\n", *env);
-		env++;
+		j = 0;
+		while (environ[i][j] != 0)
+		{
+			_putchar(environ[i][j]);
+			j++;
+		}
+		_putchar('\n');
+		i++;
 	}
+	return (0);
 }
